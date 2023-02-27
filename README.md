@@ -4,13 +4,34 @@
 cargo run
 ```
 
-## 书籍简介
-```text
-https://www.lpalmieri.com/posts/2020-05-24-zero-to-production-0-foreword/
-```
-
 ## 常用命令
 ```shell
+# 安装 rust nightly 版本
+rustup toolchain install nightly --allow-downgrade
+
+# 更新 rust toolchain
+rustup update
+
+# 查看 rust toolchain
+rustup toolchain list
+
+# rust 版本 & cargo 版本
+rustc --version & cargo --version
+
+# rust code coverage tool
+# At the time of writing tarpaulin only supports
+# x86_64 CPU architectures running Linux.
+cargo install cargo-tarpaulin(cargo tarpaulin --ignore-tests)
+
+# rust lint 静态代码分析
+rustup component add clippy(cargo clippy -- -D warnings)
+
+# rust fmt 格式化代码
+rustup component add rustfmt(cargo fmt -- --check)
+
+# rust 依赖漏洞检查
+cargo install cargo-audit(cargo audit)
+
 # 单元测试
 cargo test
 
@@ -49,6 +70,24 @@ cargo add tokio --dev
 
 ## 文档
 ```text
+# Domain Driven Design
+https://www.youtube.com/watch?v=PLFl95c-IiU
+
+# type-driven design
+https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/
+
+# Test coverage
+https://martinfowler.com/bliki/TestCoverage.html
+
+# tarpaulin
+https://github.com/xd009642/tarpaulin
+
+# clippy
+https://github.com/rust-lang/rust-clippy#configuration
+
+# githup workflow
+https://docs.github.com/zh/actions/quickstart
+
 # mdn web post request encode doc
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
@@ -76,6 +115,10 @@ https://serde.rs/
 
 ## 概念理解
 ```text
-1. 无状态应用
-平时写的 web 服务进行数据持久化的时候不会依赖于机器本地的文件系统，而会使用外部系统进行数据存储；（这种叫无状态应用）
+1. we expect Cloud-native applications
+To achieve high-availability while running in fault-prone environments;
+To allow us to continuously release new versions with zero downtime;
+To handle dynamic workloads (e.g. request volumes).
+
+
 ```
