@@ -32,6 +32,9 @@ rustup component add rustfmt(cargo fmt -- --check)
 # rust 依赖漏洞检查
 cargo install cargo-audit(cargo audit)
 
+# rust 添加 cargo add
+cargo install cargo-edit
+
 # 单元测试
 cargo test
 
