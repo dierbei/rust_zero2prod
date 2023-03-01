@@ -105,6 +105,12 @@ https://doc.rust-lang.org/book/ch11-03-test-organization.html
 # rust target
 https://doc.rust-lang.org/cargo/reference/cargo-targets.html#cargo-targets
 
+# unix port 0
+https://www.lifewire.com/port-0-in-tcp-and-udp-818145
+
+# tcp listener
+https://www.lifewire.com/port-0-in-tcp-and-udp-818145
+
 # mdn web post request encode doc
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
