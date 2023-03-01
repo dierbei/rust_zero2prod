@@ -105,6 +105,12 @@ https://github.com/rust-lang/rust-clippy#configuration
 # githup workflow
 https://docs.github.com/zh/actions/quickstart
 
+# rust test options
+https://doc.rust-lang.org/book/ch11-03-test-organization.html
+
+# rust target
+https://doc.rust-lang.org/cargo/reference/cargo-targets.html#cargo-targets
+
 # mdn web post request encode doc
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
@@ -130,11 +136,21 @@ https://docs.rs/actix-web/4.0.0-beta.3/actix_web/web/struct.Form.html
 https://serde.rs/
 ```
 
-## 概念理解
+## concept
 ```text
 1. we expect Cloud-native applications
 To achieve high-availability while running in fault-prone environments;
 To allow us to continuously release new versions with zero downtime;
 To handle dynamic workloads (e.g. request volumes).
 
+2. black box test
+This is often referred to as black box testing: we verify the behaviour of a system by examining its
+output given a set of inputs without having access to the details of its internal implementation.
+
+3. 全黑盒解决方案是什么意思？
+全黑盒解决方案是指一种解决问题的方法，其中包含的细节和实现方式是未知的，只知道输入和输出的关系。这种解决方案通常基于黑盒测试的原理，即在不知道内部实现细节的情况下，仅通过输入和输出来测试系统或软件的正确性。
+
+在信息技术领域，全黑盒解决方案通常用于描述一些外部服务或系统的接口，例如API（应用程序编程接口）或云服务。这些接口向用户公开了输入和输出的格式和类型，但没有透露底层实现的细节。
+
+全黑盒解决方案的优点是可以隐藏底层实现的细节，从而降低攻击者对系统的攻击风险。另外，这种解决方案也可以促进不同团队之间的协作，因为它们不需要知道对方的具体实现细节，只需要遵循公开的接口规范。缺点是在出现问题时，可能需要更长时间来定位问题的根本原因。
 ```
