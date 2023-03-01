@@ -51,27 +51,21 @@ cargo install cargo-audit(cargo audit)
 cargo install cargo-edit
 
 # 单元测试
-cargo test
+cargo test(-- --nocapture)
 
 # 依赖检查，功能类似于 cargo build，只不过不生成目标文件
 cargo check
 
-# cargo add 命令前置安装
-cargo install cargo-edit
-
 # 扩展宏
 cargo install cargo-expand(cargo expand)
 
-# 添加 actix-rt
+# 添加 actix-rt  under `[dev-dependencies]` in Cargo.toml
 cargo add actix-rt --dev
 
-# 添加 reqwest
+# 添加 reqwest under `[dev-dependencies]` in Cargo.toml
 `cargo add reqwest --dev
 
-# 展开测试文件
-cargo expand --test health_check
-
-# 添加 tokio
+# 添加 tokio under `[dev-dependencies]` in Cargo.toml
 cargo add tokio --dev
 ```
 
