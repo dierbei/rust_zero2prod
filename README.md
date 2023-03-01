@@ -4,6 +4,21 @@
 cargo run
 ```
 
+## curl
+```shell
+# health check
+curl -v http://127.0.0.1:8000/health_check
+```
+
+## actix-web
+```shell
+# HttpResponse
+https://docs.rs/actix-web/4.0.0-beta.3/actix_web/struct.HttpResponse.html
+
+# HttpResponseBuilder
+https://docs.rs/actix-web/4.0.0-beta.3/actix_web/dev/struct.HttpResponseBuilder.html
+```
+
 ## 常用命令
 ```shell
 # 安装 rust nightly 版本
@@ -45,8 +60,7 @@ cargo check
 cargo install cargo-edit
 
 # 扩展宏
-cargo install cargo-expand
-cargo expand
+cargo install cargo-expand(cargo expand)
 
 # 添加 actix-rt
 cargo add actix-rt --dev
