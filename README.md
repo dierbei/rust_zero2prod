@@ -1,5 +1,9 @@
 ## 快速开始
 ```shell
+# 启动数据库
+chmod +x scripts/init_db.sh
+./scripts/init_db.sh
+
 # 启动程序
 cargo run
 ```
@@ -51,7 +55,15 @@ cargo install cargo-audit(cargo audit)
 cargo install cargo-edit
 
 # 单元测试
-cargo test(-- --nocapture)
+cargo test
+# 打印 println!
+cargo test-- --nocapture
+# 指定测试文件
+cargo test --test health_check
+# 指定测试函数
+cargo test fn_name
+# 检查测试代码是否编写正确不运行测试
+cargo test --no-run
 
 # 依赖检查，功能类似于 cargo build，只不过不生成目标文件
 cargo check
@@ -111,8 +123,11 @@ https://www.lifewire.com/port-0-in-tcp-and-udp-818145
 # tcp listener
 https://www.lifewire.com/port-0-in-tcp-and-udp-818145
 
-# mdn web post request encode doc
+# post form available data options
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+
+# table driven test
+https://github.com/golang/go/wiki/TableDrivenTests
 
 # url encode doc
 https://www.w3schools.com/tags/ref_urlencode.ASP
@@ -134,6 +149,12 @@ https://docs.rs/actix-web/4.0.0-beta.3/actix_web/web/struct.Form.html
 
 # serde
 https://serde.rs/
+
+# generic type
+https://doc.rust-lang.org/book/ch10-01-syntax.html
+
+# Understanding Serde
+https://www.joshmcguigan.com/blog/understanding-serde/
 ```
 
 ## concept
