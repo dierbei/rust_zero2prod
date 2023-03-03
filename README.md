@@ -7,6 +7,10 @@ chmod +x scripts/init_db.sh
 # 启动程序
 cargo run
 ```
+```shell
+# 跳过启动容器
+SKIP_DOCKER=true ./scripts/init_db.sh
+```
 
 ## curl
 ```shell
@@ -21,6 +25,16 @@ https://docs.rs/actix-web/4.0.0-beta.3/actix_web/struct.HttpResponse.html
 
 # HttpResponseBuilder
 https://docs.rs/actix-web/4.0.0-beta.3/actix_web/dev/struct.HttpResponseBuilder.html
+```
+
+## sqlx-cli
+```shell
+# 安装
+cargo install --version=0.5.7 sqlx-cli --no-default-features --features postgres
+
+# Assuming you used the default parameters to launch Postgres in Docker!
+export DATABASE_URL=postgres://postgres:password@localhost:5432/newsletter
+sqlx migrate add create_subscriptions_table
 ```
 
 ## 常用命令
@@ -169,9 +183,11 @@ This is often referred to as black box testing: we verify the behaviour of a sys
 output given a set of inputs without having access to the details of its internal implementation.
 
 3. 全黑盒解决方案是什么意思？
-全黑盒解决方案是指一种解决问题的方法，其中包含的细节和实现方式是未知的，只知道输入和输出的关系。这种解决方案通常基于黑盒测试的原理，即在不知道内部实现细节的情况下，仅通过输入和输出来测试系统或软件的正确性。
-
-在信息技术领域，全黑盒解决方案通常用于描述一些外部服务或系统的接口，例如API（应用程序编程接口）或云服务。这些接口向用户公开了输入和输出的格式和类型，但没有透露底层实现的细节。
-
-全黑盒解决方案的优点是可以隐藏底层实现的细节，从而降低攻击者对系统的攻击风险。另外，这种解决方案也可以促进不同团队之间的协作，因为它们不需要知道对方的具体实现细节，只需要遵循公开的接口规范。缺点是在出现问题时，可能需要更长时间来定位问题的根本原因。
+全黑盒解决方案是指一种解决问题的方法，其中包含的细节和实现方式是未知的，只知道输入和输出的关系。
+这种解决方案通常基于黑盒测试的原理，即在不知道内部实现细节的情况下，仅通过输入和输出来测试系统或软件的正确性。
+在信息技术领域，全黑盒解决方案通常用于描述一些外部服务或系统的接口，例如API（应用程序编程接口）或云服务。
+这些接口向用户公开了输入和输出的格式和类型，但没有透露底层实现的细节。
+全黑盒解决方案的优点是可以隐藏底层实现的细节，从而降低攻击者对系统的攻击风险。
+另外，这种解决方案也可以促进不同团队之间的协作，因为它们不需要知道对方的具体实现细节，只需要遵循公开的接口规范。
+缺点是在出现问题时，可能需要更长时间来定位问题的根本原因。
 ```
