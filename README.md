@@ -93,6 +93,9 @@ cargo add actix-rt --dev
 
 # 添加 tokio under `[dev-dependencies]` in Cargo.toml
 cargo add tokio --dev
+
+# 添加 config 读取配置文件
+cargo add config
 ```
 
 ## 集成测试

@@ -30,6 +30,7 @@ actix-http = "3.2.2"
 # The feature is not enabled by default to avoid pulling in
 # unnecessary dependencies for projects that do not need it.
 serde = { version = "1", features = ["derive"]}
+config = { version = "0.11.0", default-features = false, features = ["yaml"] }
 
 # Using table-like toml syntax to avoid a super-long line!
 [dependencies.sqlx]
