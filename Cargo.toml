@@ -32,6 +32,9 @@ actix-http = "3.2.2"
 serde = { version = "1", features = ["derive"]}
 config = { version = "0.11.0", default-features = false, features = ["yaml"] }
 
+uuid = { version = "0.8.1", features = ["v4"] }
+chrono = "0.4.15"
+
 # Using table-like toml syntax to avoid a super-long line!
 [dependencies.sqlx]
 version = "0.5.7"
