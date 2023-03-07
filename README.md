@@ -68,7 +68,7 @@ cargo install cargo-audit(cargo audit)
 # rust 添加 cargo add
 cargo install cargo-edit
 
-# 单元测试
+# 执行测试
 cargo test
 # 打印 println!
 cargo test-- --nocapture
@@ -78,6 +78,8 @@ cargo test --test health_check
 cargo test fn_name
 # 检查测试代码是否编写正确不运行测试
 cargo test --no-run
+# 重复测试 100 次
+repeat 100 { cargo test }
 
 # 依赖检查，功能类似于 cargo build，只不过不生成目标文件
 cargo check
