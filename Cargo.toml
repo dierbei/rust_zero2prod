@@ -30,12 +30,32 @@ actix-http = "3.2.2"
 # The feature is not enabled by default to avoid pulling in
 # unnecessary dependencies for projects that do not need it.
 serde = { version = "1", features = ["derive"]}
+
+# 读取 yaml 配置文件
 config = { version = "0.11.0", default-features = false, features = ["yaml"] }
 
+# 生成uuid
 uuid = { version = "0.8.1", features = ["v4"] }
+
+# 时间
 chrono = "0.4.15"
+
+# 全局日志
 env_logger = "0.10.0"
+
+# 手动打印日志
 log = "0.4.17"
+
+# 链路追踪
+tracing = { version = "0.1", features = ["log"] }
+# Instrument
+tracing-futures = "0.2.5"
+# subscriber
+tracing-subscriber = { version = "0.2.12", features = ["registry", "env-filter"] }
+# format e.json
+tracing-bunyan-formatter = "0.2"
+tracing-log = "0.1.3"
+
 
 # Using table-like toml syntax to avoid a super-long line!
 [dependencies.sqlx]

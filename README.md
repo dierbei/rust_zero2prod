@@ -6,6 +6,8 @@ chmod +x scripts/init_db.sh
 
 # 启动程序
 cargo run
+# 携带日志级别
+RUST_LOG=trace cargo run
 ```
 ```shell
 # 跳过启动容器
@@ -16,6 +18,12 @@ SKIP_DOCKER=true ./scripts/init_db.sh
 ```shell
 # health check
 curl -v http://127.0.0.1:8000/health_check
+```
+
+## issues
+```text
+# tracing-bunyan-formater error
+https://github.com/LukeMathWalker/zero-to-production/issues/119
 ```
 
 ## actix-web
@@ -39,6 +47,13 @@ sqlx migrate add create_subscriptions_table
 
 ## 常用命令
 ```shell
+# 删除未使用的依赖
+cargo install cargo-udeps
+# cargo-udeps requires the nightly compiler.
+# We add +nightly to our cargo invocation
+# to tell cargo explicitly what toolchain we want to use.
+cargo +nightly udeps
+
 # 安装 rust nightly 版本
 rustup toolchain install nightly --allow-downgrade
 
@@ -183,6 +198,9 @@ https://docs.rs/actix-web/4.0.0-beta.1/actix_web/middleware/struct.Logger.html
 
 # mio
 https://docs.rs/mio/latest/mio/
+
+# tracing subscriber
+https://docs.rs/tracing/0.1.19/tracing/trait.Subscriber.html
 ```
 
 ## concept
