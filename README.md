@@ -174,6 +174,15 @@ https://doc.rust-lang.org/book/ch10-01-syntax.html
 
 # Understanding Serde
 https://www.joshmcguigan.com/blog/understanding-serde/
+
+# sql injection
+https://en.wikipedia.org/wiki/SQL_injection
+
+# active-web log middleware
+https://docs.rs/actix-web/4.0.0-beta.1/actix_web/middleware/struct.Logger.html
+
+# mio
+https://docs.rs/mio/latest/mio/
 ```
 
 ## concept
