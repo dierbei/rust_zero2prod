@@ -11,45 +11,45 @@ pub struct FormData {
 }
 
 // form => urlencoding => Deserialize
+#[tracing::instrument(
+    name = "Adding a new subscriber",
+    skip(form, pool),
+    fields(
+        // request_id = %Uuid::new_v4(),
+        subscriber_email = %form.email,
+        subscriber_name = %form.name
+    )
+)]
 pub async fn subscribe(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
-    let request_id = Uuid::new_v4();
-    let request_span = tracing::info_span!(
-    "Adding a new subscriber.",
-    %request_id,
-    subscriber_email = %form.email,
-    subscriber_name= %form.name
-    );
-    let _request_span_guard = request_span.enter();
-    // We do not call `.enter` on query_span!
-    // `.instrument` takes care of it at the right moments
-    // in the query future lifetime
-    let query_span = tracing::info_span!("Saving new subscriber details in the database");
+    match insert_subscriber(&pool, &form).await {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(_) => HttpResponse::InternalServerError().finish()
+    }
+}
 
-    match sqlx::query!(
+#[tracing::instrument(
+    name = "Saving new subscriber details in the database",
+    skip(form, pool)
+)]
+pub async fn insert_subscriber(pool: &PgPool, form: &FormData) -> Result<(), sqlx::Error> {
+    sqlx::query!(
         r#"
-        INSERT INTO subscriptions (id, email, name, subscribed_at)
-        VALUES ($1, $2, $3, $4)
-        "#,
+INSERT INTO subscriptions (id, email, name, subscribed_at)
+VALUES ($1, $2, $3, $4)
+"#,
         Uuid::new_v4(),
         form.email,
         form.name,
         Utc::now()
     )
-    // Using the pool as a drop-in replacement
-    .execute(pool.get_ref())
-    // First we attach the instrumentation, then we `.await` it
-    .instrument(query_span)
+    .execute(pool)
     .await
-    {
-        Ok(_) => HttpResponse::Ok().finish(),
-        Err(e) => {
-            // Yes, this error log falls outside of `query_span`
-            // We'll rectify it later, pinky swear!
-            tracing::error!("Failed to execute query: {:?}", e);
-            HttpResponse::InternalServerError().finish()
-        }
-    }
-
-    // `_request_span_guard` is dropped at the end of `subscribe`
-    // That's when we "exit" the span
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+        // Using the `?` operator to return early
+        // if the function failed, returning a sqlx::Error
+        // We will talk about error handling in depth later!
+    })?;
+    Ok(())
 }
