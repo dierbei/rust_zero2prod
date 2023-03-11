@@ -72,5 +72,9 @@ features = [
 
 [dev-dependencies]
 actix-rt = "2.8.0"
+# sync once
+once_cell = "1.17.1"
+
+# http request
 reqwest = "0.11.14"
 tokio = "1.25.0"

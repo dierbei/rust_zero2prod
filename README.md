@@ -113,6 +113,14 @@ cargo add tokio --dev
 
 # 添加 config 读取配置文件
 cargo add config
+
+# 添加单例模式创建
+cargo add once_cell --dev
+
+# We are using the `bunyan` CLI to prettify the outputted logs
+# The original `bunyan` requires NPM, but you can install a Rust-port with
+# `cargo install bunyan`
+TEST_LOG=true cargo test health_check_works | bunyan
 ```
 
 ## 集成测试
