@@ -121,6 +121,11 @@ cargo add once_cell --dev
 # The original `bunyan` requires NPM, but you can install a Rust-port with
 # `cargo install bunyan`
 TEST_LOG=true cargo test health_check_works | bunyan
+
+# It must be invoked as a cargo subcommand
+# All options after `--` are passed to cargo itself
+# We need to point it to our binary using --bin
+cargo sqlx prepare -- --bin zero2prod
 ```
 
 ## 集成测试
