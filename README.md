@@ -13,6 +13,10 @@ RUST_LOG=trace cargo run
 # 跳过启动容器
 SKIP_DOCKER=true ./scripts/init_db.sh
 ```
+```shell
+docker build --tag zero2prod --file Dockerfile 
+docker run -p 8000:8000 zero2prod
+```
 
 ## curl
 ```shell
@@ -217,6 +221,12 @@ https://docs.rs/tracing/0.1.19/tracing/trait.Subscriber.html
 
 # 0.0.0.0
 https://github.com/sinatra/sinatra/issues/1369
+
+# symbols from binary
+https://github.com/johnthagen/min-sized-rust#strip-symbols-from-binary
+
+# rust-musl-builder
+https://github.com/emk/rust-musl-builder
 ```
 
 ## concept
