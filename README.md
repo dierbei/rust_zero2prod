@@ -14,7 +14,7 @@ RUST_LOG=trace cargo run
 SKIP_DOCKER=true ./scripts/init_db.sh
 ```
 ```shell
-docker build --tag zero2prod --file Dockerfile 
+docker build -t zero2prod . 
 docker run -p 8000:8000 zero2prod
 ```
 
@@ -227,6 +227,9 @@ https://github.com/johnthagen/min-sized-rust#strip-symbols-from-binary
 
 # rust-musl-builder
 https://github.com/emk/rust-musl-builder
+
+# rust 年度调差 2019
+https://blog.rust-lang.org/2020/04/17/Rust-survey-2019.html#rust-adoption---a-closer-look
 ```
 
 ## concept
