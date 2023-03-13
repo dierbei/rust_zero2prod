@@ -130,6 +130,9 @@ TEST_LOG=true cargo test health_check_works | bunyan
 # All options after `--` are passed to cargo itself
 # We need to point it to our binary using --bin
 cargo sqlx prepare -- --bin zero2prod
+
+# 增加 serde 辅助函数 string to number
+cargo add serde-aux
 ```
 
 ## 集成测试
