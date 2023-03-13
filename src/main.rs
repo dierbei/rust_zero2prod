@@ -16,9 +16,7 @@ async fn main() -> std::io::Result<()> {
     // ::connect_lazy(&configuration.database.connection_string())
         // .await
         .connect_timeout(std::time::Duration::from_secs(2))
-        .connect(&configuration.database.with_db())
-        .await
-        .expect("Failed to connect to Postgres.");
+        .connect_lazy_with(configuration.database.with_db());
 
     // We have removed the hard-coded `8000` - it's now coming from our settings!
     let address = format!(
