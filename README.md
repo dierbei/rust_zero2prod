@@ -90,7 +90,7 @@ cargo install cargo-edit
 # 执行测试
 cargo test
 # 打印 println!
-cargo test-- --nocapture
+cargo test -- --nocapture
 # 指定测试文件
 cargo test --test health_check
 # 指定测试函数
@@ -133,6 +133,9 @@ cargo sqlx prepare -- --bin zero2prod
 
 # 增加 serde 辅助函数 string to number
 cargo add serde-aux
+
+# unicode valid
+cargo add unicode-segmentation
 ```
 
 ## 集成测试
@@ -233,6 +236,9 @@ https://github.com/emk/rust-musl-builder
 
 # rust 年度调差 2019
 https://blog.rust-lang.org/2020/04/17/Rust-survey-2019.html#rust-adoption---a-closer-look
+
+# actix-web panic
+https://github.com/actix/actix-web/issues/1501
 ```
 
 ## concept
