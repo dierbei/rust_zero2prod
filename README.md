@@ -136,6 +136,9 @@ cargo add serde-aux
 
 # unicode valid
 cargo add unicode-segmentation
+
+# most assert info
+cargo add --dev claim
 ```
 
 ## 集成测试
