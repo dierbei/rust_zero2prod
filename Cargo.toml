@@ -61,6 +61,7 @@ tracing-actix-web = "0.7.2"
 
 # unicode valid
 unicode-segmentation = "1.10.1"
+validator = "0.16.0"
 
 # Using table-like toml syntax to avoid a super-long line!
 [dependencies.sqlx]

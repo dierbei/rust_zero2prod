@@ -99,6 +99,8 @@ cargo test fn_name
 cargo test --no-run
 # 重复测试 100 次
 repeat 100 { cargo test }
+# 指定 package
+cargo test --workspace domain
 
 # 依赖检查，功能类似于 cargo build，只不过不生成目标文件
 cargo check
@@ -139,6 +141,9 @@ cargo add unicode-segmentation
 
 # most assert info
 cargo add --dev claim
+
+# email valid
+cargo add validator
 ```
 
 ## 集成测试
