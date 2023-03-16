@@ -101,6 +101,8 @@ cargo test --no-run
 repeat 100 { cargo test }
 # 指定 package
 cargo test --workspace domain
+cargo test domain
+cargo test valid_emails
 
 # 依赖检查，功能类似于 cargo build，只不过不生成目标文件
 cargo check
@@ -247,6 +249,10 @@ https://blog.rust-lang.org/2020/04/17/Rust-survey-2019.html#rust-adoption---a-cl
 
 # actix-web panic
 https://github.com/actix/actix-web/issues/1501
+
+# 随机生成测试数据
+https://crates.io/crates/quickcheck
+https://crates.io/crates/proptest
 ```
 
 ## concept
