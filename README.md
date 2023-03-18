@@ -106,6 +106,7 @@ cargo test valid_emails
 
 # 依赖检查，功能类似于 cargo build，只不过不生成目标文件
 cargo check
+cargo check --all-targets
 
 # 扩展宏
 cargo install cargo-expand(cargo expand)

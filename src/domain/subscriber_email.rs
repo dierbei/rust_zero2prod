@@ -25,7 +25,7 @@ mod tests {
     use claim::assert_err;
     use fake::faker::internet::en::SafeEmail;
     use fake::Fake;
-    use quickcheck::{Gen};
+    use quickcheck::Gen;
 
     #[test]
     fn empty_string_is_rejected() {
@@ -61,5 +61,4 @@ mod tests {
         // dbg!(&email);
         claim::assert_ok!(SubscriberEmail::parse(email));
     }
-
 }
