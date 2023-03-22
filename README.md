@@ -254,6 +254,9 @@ https://github.com/actix/actix-web/issues/1501
 # 随机生成测试数据
 https://crates.io/crates/quickcheck
 https://crates.io/crates/proptest
+
+# rust wiremock
+https://github.com/lukemathwalker/wiremock-rs
 ```
 
 ## concept
