@@ -41,18 +41,20 @@ async fn spawn_app() -> TestApp {
 
     // Build a new email client
     let timeout = configuration.email_client.timeout();
-    let sender_email = configuration.email_client.sender()
+    let sender_email = configuration
+        .email_client
+        .sender()
         .expect("Invalid sender email address.");
     let email_client = EmailClient::new(
         configuration.email_client.base_url,
         sender_email,
         // Pass argument from configuration
-            configuration.email_client.authorization_token,
+        configuration.email_client.authorization_token,
         timeout,
     );
 
-    let server =
-        zero2prod::startup::run(listener, connection_pool.clone(), email_client).expect("Failed to bind address");
+    let server = zero2prod::startup::run(listener, connection_pool.clone(), email_client)
+        .expect("Failed to bind address");
 
     // Launch the server as a background task
     // tokio::spawn returns a handle to the spawned future,

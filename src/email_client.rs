@@ -9,11 +9,13 @@ pub struct EmailClient {
 }
 
 impl EmailClient {
-    pub fn new(base_url: String, sender: SubscriberEmail, authorization_token: String, timeout: std::time::Duration) -> Self {
-        let http_client = Client::builder()
-            .timeout(timeout)
-            .build()
-            .unwrap();
+    pub fn new(
+        base_url: String,
+        sender: SubscriberEmail,
+        authorization_token: String,
+        timeout: std::time::Duration,
+    ) -> Self {
+        let http_client = Client::builder().timeout(timeout).build().unwrap();
 
         Self {
             http_client: http_client,
@@ -44,8 +46,7 @@ impl EmailClient {
             html_body: html_content,
             text_body: text_content,
         };
-        self
-            .http_client
+        self.http_client
             .post(&url)
             .header("X-Postmark-Server-Token", &self.authorization_token)
             .json(&request_body)
@@ -70,14 +71,14 @@ struct SendEmailRequest<'a> {
 mod tests {
     use crate::domain::SubscriberEmail;
     use crate::email_client::EmailClient;
+    use claim::assert_err;
+    use claim::assert_ok;
     use fake::faker::internet::en::SafeEmail;
     use fake::faker::lorem::en::{Paragraph, Sentence};
     use fake::{Fake, Faker};
     use wiremock::matchers::any;
-    use wiremock::matchers::{header_exists, header, path, method};
+    use wiremock::matchers::{header, header_exists, method, path};
     use wiremock::{Mock, MockServer, Request, ResponseTemplate};
-    use claim::assert_ok;
-    use claim::assert_err;
 
     /// Generate a random email subject
     fn subject() -> String {
@@ -100,7 +101,7 @@ mod tests {
             base_url,
             email(),
             Faker.fake(),
-            std::time::Duration::from_millis(200)
+            std::time::Duration::from_millis(200),
         )
     }
 
@@ -156,7 +157,7 @@ mod tests {
         let email_client = email_client(mock_server.uri());
 
         let response = ResponseTemplate::new(200)
-        // 3 minutes!
+            // 3 minutes!
             .set_delay(std::time::Duration::from_secs(180));
 
         Mock::given(any())
@@ -206,7 +207,7 @@ mod tests {
         let email_client = email_client(mock_server.uri());
 
         Mock::given(any())
-        // Not a 200 anymore!
+            // Not a 200 anymore!
             .respond_with(ResponseTemplate::new(500))
             .expect(1)
             .mount(&mock_server)
@@ -233,8 +234,8 @@ mod tests {
                 // Check that all the mandatory fields are populated
                 // without inspecting the field values
                 body.get("From").is_some()
-                && body.get("Subject").is_some()
-                && body.get("HtmlBody").is_some()
+                    && body.get("Subject").is_some()
+                    && body.get("HtmlBody").is_some()
                     && body.get("TextBody").is_some()
             } else {
                 // If parsing failed, do not match the request
