@@ -18,8 +18,14 @@ async fn main() -> std::io::Result<()> {
         .connect_timeout(std::time::Duration::from_secs(2))
         .connect_lazy_with(configuration.database.with_db());
 
+    let timeout = configuration.email_client.timeout();
     let sender_email = configuration.email_client.sender().expect("Invalid sender email address.");
-    let email_client = EmailClient::new(configuration.email_client.base_url, sender_email, configuration.email_client.authorization_token);
+    let email_client = EmailClient::new(
+        configuration.email_client.base_url,
+        sender_email,
+        configuration.email_client.authorization_token,
+        timeout
+    );
 
     // We have removed the hard-coded `8000` - it's now coming from our settings!
     let address = format!(

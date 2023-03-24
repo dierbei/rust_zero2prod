@@ -40,6 +40,7 @@ async fn spawn_app() -> TestApp {
     let connection_pool = configure_database(&configuration.database).await;
 
     // Build a new email client
+    let timeout = configuration.email_client.timeout();
     let sender_email = configuration.email_client.sender()
         .expect("Invalid sender email address.");
     let email_client = EmailClient::new(
@@ -47,6 +48,7 @@ async fn spawn_app() -> TestApp {
         sender_email,
         // Pass argument from configuration
             configuration.email_client.authorization_token,
+        timeout,
     );
 
     let server =
