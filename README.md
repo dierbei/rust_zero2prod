@@ -1,4 +1,6 @@
 ## 快速开始
+
+#### 启动程序
 ```shell
 # 启动数据库
 chmod +x scripts/init_db.sh
@@ -9,13 +11,28 @@ cargo run
 # 携带日志级别
 RUST_LOG=trace cargo run
 ```
+
+#### 初始化数据库容器
 ```shell
 # 跳过启动容器
 SKIP_DOCKER=true ./scripts/init_db.sh
 ```
+
+#### 构建容器
 ```shell
 docker build -t zero2prod . 
 docker run -p 8000:8000 zero2prod
+```
+
+#### 构建测试
+```shell
+# Build test code, without running tests
+cargo build --tests
+# Find all files with a name starting with `health_check`
+ls target/debug/deps | grep health_check
+
+# file descriptor
+ulimit -n 10000 && cargo test
 ```
 
 ## curl
@@ -150,6 +167,8 @@ cargo add validator
 ```
 
 ## 集成测试
+
+#### 基本写法
 ```text
 1. 利用 actix-rt 提供的运行时；
 2. 资源清理（多次测试是否会出现端口占用）；
@@ -158,6 +177,53 @@ cargo add validator
 5. 启动服务时不是硬编码，而是传递参数；
 完成标准：多次运行测试用例（cargo test），不会出现失败;
 ```
+
+#### 测试的作用
+```text
+编写测试确实可以帮助我们构建技术优势，但编写测试需要花费一定的时间。
+当我们有紧迫的截止日期时，为了节省时间，往往会牺牲测试工作。也就是说，在时间紧迫的情况下，测试通常是最容易被忽视或削减的工作之一。
+然而，这种做法可能会导致质量问题和技术债务的增加，最终可能需要更多的时间来解决这些问题，因此在项目开发中不能忽视测试的重要性。
+```
+
+#### 解决测试复杂结构的方法
+```text
+如果单个测试文件 tests/api/subscriptions.rs 变得过于复杂和混乱，我们可以将其转换为一个模块，并且创建一个名为 tests/api/subscriptions/helpers.rs 的文件来保存与订阅测试相关的帮助函数。
+通过这种方式，我们可以将不同的测试用例组织到多个专注于特定流程或关注点的测试文件中。这些测试文件可以在 tests/api/subscriptions/ 目录下，每个文件只关注于一个特定的功能或方面。
+这样做的好处是，它可以使测试代码更加清晰、易于维护和扩展。同时，我们还可以将测试辅助函数的实现细节封装在 helpers.rs 文件中，从而进一步提高代码的可读性和可维护性。
+```
+
+#### 测试编译优化
+当你编写一个 Rust 项目时，通常会创建一个 src 目录用于放置源代码文件，以及一个 tests 目录用于放置测试用例。如果你的测试用例非常多且文件结构很扁平，比如：
+```text
+tests/
+├── test1.rs
+├── test2.rs
+├── test3.rs
+├── test4.rs
+├── test5.rs
+├── test6.rs
+├── test7.rs
+├── test8.rs
+├── test9.rs
+└── test10.rs
+```
+那么每次运行 cargo test 命令时，Cargo 将会依次编译和链接这些测试用例，这意味着编译时间和链接时间将呈现线性增长。
+
+但是，如果你将所有测试用例放在一个单独的文件中，比如 tests/all.rs：
+```text
+// tests/all.rs
+mod test1;
+mod test2;
+mod test3;
+mod test4;
+mod test5;
+mod test6;
+mod test7;
+mod test8;
+mod test9;
+mod test10;
+```
+那么每次运行 cargo test 命令时，Cargo 只需要编译和链接这个文件一次，即可执行所有测试用例。这样可以大大减少编译和链接时间，提高构建速度。
 
 ## 文档
 ```text
