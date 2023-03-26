@@ -8,10 +8,10 @@ set -x
 set -eo pipefail
 
 # 检查 psql 命令是否安装
-if ! [ -x "$(command -v psql)" ]; then
-  echo >&2 "Error: `psql` is not installed."
-  exit 1
-fi
+#if ! [ -x "$(command -v psql)" ]; then
+#  echo >&2 "Error: `psql` is not installed."
+#  exit 1
+#fi
 
 # 检查 sqlx 命令是否安装
 if ! [ -x "$(command -v sqlx)" ]; then
@@ -41,10 +41,10 @@ then
 fi
 
 # 检查 postgresql 是否启动
-until psql -h "localhost" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
-  >&2 echo "Postgres is still unavailable - sleeping"
-  sleep 1
-done
+#until psql -h "localhost" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
+#  >&2 echo "Postgres is still unavailable - sleeping"
+#  sleep 1
+#done
 
 >&2 echo "Postgres is up and running on port ${DB_PORT} - running migrations now!"
 

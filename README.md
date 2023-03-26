@@ -64,6 +64,15 @@ cargo install --version=0.5.7 sqlx-cli --no-default-features --features postgres
 # Assuming you used the default parameters to launch Postgres in Docker!
 export DATABASE_URL=postgres://postgres:password@localhost:5432/newsletter
 sqlx migrate add create_subscriptions_table
+
+# add status
+sqlx migrate add add_status_to_subscriptions
+
+# migrate
+SKIP_DOCKER=true ./scripts/init_db.sh
+
+# backfikl
+sqlx migrate add make_status_not_null_in_subscriptions
 ```
 
 ## 常用命令
