@@ -173,6 +173,9 @@ cargo add --dev claim
 
 # email valid
 cargo add validator
+
+# retrive body url
+cargo add linkify --dev
 ```
 
 ## 集成测试
