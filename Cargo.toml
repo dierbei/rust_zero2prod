@@ -103,3 +103,6 @@ fake = "~2.3"
 
 quickcheck = "0.9.2"
 quickcheck_macros = "0.9.1"
+
+# retrive body url
+linkify = "0.9.0"
