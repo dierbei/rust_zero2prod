@@ -10,6 +10,7 @@ pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
     pub email_server: MockServer,
+    pub port: u16,
 }
 
 impl TestApp {
@@ -65,17 +66,20 @@ pub async fn spawn_app() -> TestApp {
         .await
         .expect("Failed to build application.");
 
+    let application_port = application.port();
+
     // Get the port before spawning the application
-    let address = format!("http://127.0.0.1:{}", application.port());
+    // let address = format!("http://127.0.0.1:{}", application_port);
 
     // background task
     let _ = tokio::spawn(application.run_until_stopped());
 
     // return application address and pg connection
     TestApp {
-        address,
+        address: format!("http://127.0.0.1:{}", application_port),
         db_pool: get_connection_pool(&configuration.database),
         email_server,
+        port: application_port,
     }
 
     // let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
