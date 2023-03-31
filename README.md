@@ -12,6 +12,14 @@ cargo run
 RUST_LOG=trace cargo run
 ```
 
+#### sql log level
+```shell
+# sqlx logs are a bit spammy, cutting them out to reduce noise
+export RUST_LOG="sqlx=error,info"
+export TEST_LOG=enabled
+cargo t subscribe_fails_if_there_is_a_fatal_database_error | bunyan
+```
+
 #### 初始化数据库容器
 ```shell
 # 跳过启动容器
@@ -338,6 +346,9 @@ https://github.com/lukemathwalker/wiremock-rs
 
 # rust conf 2020 error handle
 https://www.youtube.com/watch?v=rAF8mLI0naQ
+
+# rust foreign type
+https://doc.rust-lang.org/book/ch10-02-traits.html#implementing-a-trait-on-a-type
 ```
 
 ## concept
