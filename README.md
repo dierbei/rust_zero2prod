@@ -335,6 +335,9 @@ https://crates.io/crates/proptest
 
 # rust wiremock
 https://github.com/lukemathwalker/wiremock-rs
+
+# rust conf 2020 error handle
+https://www.youtube.com/watch?v=rAF8mLI0naQ
 ```
 
 ## concept
