@@ -35,7 +35,7 @@ pub struct ApplicationSettings {
     pub port: u16,
     pub host: String,
     // New field!
-    pub base_url: String
+    pub base_url: String,
 }
 
 #[derive(serde::Deserialize, Clone)]

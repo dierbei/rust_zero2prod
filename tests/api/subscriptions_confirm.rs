@@ -1,6 +1,6 @@
+use crate::helpers::spawn_app;
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, ResponseTemplate};
-use crate::helpers::spawn_app;
 
 #[actix_rt::test]
 async fn confirmations_without_token_are_rejected_with_a_400() {
@@ -50,9 +50,7 @@ async fn the_link_returned_by_subscribe_returns_a_200_if_called() {
     // dbg!(confirmation_link.clone());
 
     // Act
-    let response = reqwest::get(confirmation_links.html)
-        .await
-        .unwrap();
+    let response = reqwest::get(confirmation_links.html).await.unwrap();
 
     // Assert
     assert_eq!(response.status().as_u16(), 200);

@@ -4,14 +4,14 @@ use chrono::Utc;
 use sqlx::{PgPool, Postgres, Transaction};
 // use tracing_futures::Instrument;
 use crate::domain::{NewSubscriber, SubscriberEmail, SubscriberName};
-use uuid::Uuid;
 use crate::email_client::EmailClient;
-use crate::startup::{ApplicationBaseUrl};
+use crate::startup::ApplicationBaseUrl;
+use actix_web::http::StatusCode;
+use actix_web::ResponseError;
+use anyhow::Context;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use actix_web::ResponseError;
-use actix_web::http::StatusCode;
-use anyhow::Context;
+use uuid::Uuid;
 
 /// Generate a random 25-characters-long case-sensitive subscription token.
 fn generate_subscription_token() -> String {
@@ -96,7 +96,8 @@ pub async fn subscribe(
         .await
         .context("Failed to store the confirmation token for a new subscriber.")?;
 
-    transaction.commit()
+    transaction
+        .commit()
         .await
         .context("Failed to commit SQL transaction to store a new subscriber.")?;
 
@@ -106,8 +107,8 @@ pub async fn subscribe(
         &base_url.0,
         &subscriber_token,
     )
-        .await
-        .context("Failed to send a confirmation email.")?;
+    .await
+    .context("Failed to send a confirmation email.")?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -120,10 +121,13 @@ pub async fn send_confirmation_email(
     email_client: &EmailClient,
     new_subscriber: NewSubscriber,
     base_url: &str,
-    subscription_token: &str
+    subscription_token: &str,
 ) -> Result<(), reqwest::Error> {
     // Build a confirmation link with a dynamic root
-    let confirmation_link = format!("{}/subscriptions/confirm?subscription_token={}", base_url, subscription_token);
+    let confirmation_link = format!(
+        "{}/subscriptions/confirm?subscription_token={}",
+        base_url, subscription_token
+    );
     let plain_body = format!(
         "Welcome to our newsletter!\nVisit {} to confirm your subscription.",
         confirmation_link
@@ -134,12 +138,7 @@ pub async fn send_confirmation_email(
         confirmation_link
     );
     email_client
-        .send_email(
-            new_subscriber.email,
-            "Welcome!",
-            &html_body,
-            &plain_body,
-        )
+        .send_email(new_subscriber.email, "Welcome!", &html_body, &plain_body)
         .await
 }
 
@@ -190,14 +189,14 @@ pub async fn store_token(
         subscription_token,
         subscriber_id
     )
-        .execute(transaction)
-        .await
-        .map_err(StoreTokenError)?;
-        // .map_err(|e| {
-        //     tracing::error!("Failed to execute query: {:?}", e);
-        //     // e,
-        //     StoreTokenError(e)
-        // })?;
+    .execute(transaction)
+    .await
+    .map_err(StoreTokenError)?;
+    // .map_err(|e| {
+    //     tracing::error!("Failed to execute query: {:?}", e);
+    //     // e,
+    //     StoreTokenError(e)
+    // })?;
 
     Ok(())
 }
