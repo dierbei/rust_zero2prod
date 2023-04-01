@@ -8,6 +8,7 @@ use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
 use crate::routes;
+use crate::routes::publish_newsletter;
 
 // A new type to hold the newly built server and its port
 pub struct Application {
@@ -96,6 +97,8 @@ pub fn run(
             .route("/health_check", web::get().to(routes::health_check))
             .route("/subscriptions", web::post().to(routes::subscribe))
             .route("/subscriptions/confirm", web::get().to(routes::confirm))
+            // Register the new handler!
+            .route("/newsletters", web::post().to(publish_newsletter))
             // Get a pointer copy and attach it to the application state
             .app_data(db_pool.clone())
             .app_data(email_client.clone())
