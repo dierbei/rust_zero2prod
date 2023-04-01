@@ -1,4 +1,6 @@
 #![allow(clippy::toplevel_ref_arg)]
+extern crate core;
+
 pub mod configuration;
 pub mod domain;
 pub mod email_client;
