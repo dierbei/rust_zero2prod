@@ -8,6 +8,7 @@ chmod +x scripts/init_db.sh
 
 # 启动程序
 cargo run
+
 # 携带日志级别
 RUST_LOG=trace cargo run
 ```

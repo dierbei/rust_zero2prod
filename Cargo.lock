@@ -2897,6 +2897,7 @@ dependencies = [
  "actix-rt",
  "actix-web",
  "anyhow",
+ "base64 0.13.1",
  "chrono",
  "claim",
  "config",
