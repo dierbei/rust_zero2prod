@@ -76,6 +76,9 @@ anyhow = "1"
 # header
 base64 = "0.13"
 
+# password hash
+sha3 = "0.9"
+
 [dependencies.sqlx]
 # Using table-like toml syntax to avoid a super-long line!
 version = "0.5.7"

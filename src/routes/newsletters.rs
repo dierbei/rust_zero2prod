@@ -1,10 +1,7 @@
 use crate::domain::SubscriberEmail;
 use crate::email_client::EmailClient;
-use crate::routes::{error_chain_fmt, send_confirmation_email};
-// use actix_http::StatusCode;
-// use actix_http::HeaderMap;
+use crate::routes::{error_chain_fmt};
 use actix_http::header::HeaderMap;
-use actix_web::dev::always_ready;
 use actix_web::http::header::HeaderValue;
 use actix_web::http::{header, StatusCode};
 use actix_web::{web, ResponseError};
@@ -13,6 +10,7 @@ use anyhow::Context;
 use log::error;
 use sqlx::PgPool;
 use std::fmt::Formatter;
+use sha3::Digest;
 
 #[derive(thiserror::Error)]
 pub enum PublishError {
@@ -233,14 +231,17 @@ async fn validate_credentials(
     credentials: Credentials,
     pool: &PgPool,
 ) -> Result<uuid::Uuid, PublishError> {
+    let password_hash = sha3::Sha3_256::digest(credentials.password.as_bytes());
+    // Lowercase hexadecimal encoding.
+    let password_hash = format!("{:x}", password_hash);
     let user_id: Option<_> = sqlx::query!(
         r#"
         SELECT user_id
         FROM users
-        WHERE username = $1 AND password = $2
+        WHERE username = $1 AND password_hash = $2
         "#,
         credentials.username,
-        credentials.password
+        password_hash
     )
         .fetch_optional(pool)
         .await
