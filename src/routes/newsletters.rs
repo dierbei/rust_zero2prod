@@ -1,16 +1,17 @@
 use crate::domain::SubscriberEmail;
 use crate::email_client::EmailClient;
-use crate::routes::{error_chain_fmt};
+use crate::routes::error_chain_fmt;
 use actix_http::header::HeaderMap;
 use actix_web::http::header::HeaderValue;
 use actix_web::http::{header, StatusCode};
 use actix_web::{web, ResponseError};
 use actix_web::{HttpRequest, HttpResponse};
 use anyhow::Context;
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use log::error;
+// use sha3::Digest;
 use sqlx::PgPool;
 use std::fmt::Formatter;
-use sha3::Digest;
 
 #[derive(thiserror::Error)]
 pub enum PublishError {
@@ -227,29 +228,97 @@ fn basic_authentication(headers: &HeaderMap) -> Result<Credentials, anyhow::Erro
     Ok(Credentials { username, password })
 }
 
+#[tracing::instrument(name = "Validate credentials", skip(credentials, pool))]
 async fn validate_credentials(
     credentials: Credentials,
     pool: &PgPool,
 ) -> Result<uuid::Uuid, PublishError> {
-    let password_hash = sha3::Sha3_256::digest(credentials.password.as_bytes());
-    // Lowercase hexadecimal encoding.
-    let password_hash = format!("{:x}", password_hash);
-    let user_id: Option<_> = sqlx::query!(
+    // let row: Option<_> = sqlx::query!(
+    //     r#"
+    //     SELECT user_id, password_hash
+    //     FROM users
+    //     WHERE username = $1
+    //     "#,
+    //     credentials.username,
+    // )
+    // .fetch_optional(pool)
+    // .await
+    // .context("Failed to perform a query to retrieve stored credentials.")
+    // .map_err(PublishError::UnexpectedError)?;
+
+    let (user_id, expected_password_hash) = get_stored_credentials(&credentials.username, &pool)
+        .await
+        .map_err(PublishError::UnexpectedError)?
+        .ok_or_else(|| PublishError::AuthError(anyhow::anyhow!("Unknown username.")))?;
+
+    actix_web::rt::task::spawn_blocking(move || {
+        verify_password_hash(
+            expected_password_hash,
+            credentials.password
+        )
+    })
+        .await
+        .context("Failed to spawn blocking task.")
+        .map_err(PublishError::UnexpectedError)??;
+
+    // let expected_password_hash = PasswordHash::new(&expected_password_hash)
+    //     .context("Failed to parse hash in PHC string format.")
+    //     .map_err(PublishError::UnexpectedError)?;
+    //
+    // tracing::info_span!("Verify password hash")
+    //     .in_scope(|| {
+    //         Argon2::default()
+    //             .verify_password(
+    //                 credentials.password.as_bytes(),
+    //                 &expected_password_hash
+    //             ) })
+    //     .context("Invalid password.")
+    //     .map_err(PublishError::AuthError)?;
+
+    // Argon2::default()
+    //     .verify_password(credentials.password.as_bytes(), &expected_password_hash)
+    //     .context("Invalid password.")
+    //     .map_err(PublishError::AuthError)?;
+
+    Ok(user_id)
+}
+
+// We extracted the db-querying logic in its own function with its own span.
+#[tracing::instrument(name = "Get stored credentials", skip(username, pool))]
+async fn get_stored_credentials(
+    username: &str,
+    pool: &PgPool,
+) -> Result<Option<(uuid::Uuid, String)>, anyhow::Error> {
+    let row = sqlx::query!(
         r#"
-        SELECT user_id
+        SELECT user_id, password_hash
         FROM users
-        WHERE username = $1 AND password_hash = $2
+        WHERE username = $1
         "#,
-        credentials.username,
-        password_hash
+        username,
     )
         .fetch_optional(pool)
         .await
-        .context("Failed to perform a query to validate auth credentials.")
+        .context("Failed to perform a query to retrieve stored credentials.")?
+        .map(|row| (row.user_id, row.password_hash));
+
+    Ok(row)
+}
+
+#[tracing::instrument(
+    name = "Verify password hash",
+    skip(expected_password_hash, password_candidate)
+)]
+fn verify_password_hash(
+    expected_password_hash: String,
+    password_candidate: String,
+) -> Result<(), PublishError> {
+    let expected_password_hash = PasswordHash::new(&expected_password_hash)
+        .context("Failed to parse hash in PHC string format.")
         .map_err(PublishError::UnexpectedError)?;
 
-    user_id
-        .map(|row| row.user_id)
-        .ok_or_else(|| anyhow::anyhow!("Invalid username or password."))
+    Argon2::default()
+        .verify_password(password_candidate.as_bytes(), &expected_password_hash)
+        .context("Invalid password.")
         .map_err(PublishError::AuthError)
 }

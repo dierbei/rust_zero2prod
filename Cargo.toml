@@ -79,6 +79,9 @@ base64 = "0.13"
 # password hash
 sha3 = "0.9"
 
+# encrype password
+argon2 = { version = "0.3", features = ["std"] }
+
 [dependencies.sqlx]
 # Using table-like toml syntax to avoid a super-long line!
 version = "0.5.7"

@@ -1,16 +1,18 @@
 use once_cell::sync::Lazy;
-use sha3::Digest;
+// use sha3::Digest;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use uuid::Uuid;
 use wiremock::MockServer;
 use zero2prod::configuration::{get_configuration, DatabaseSettings};
 use zero2prod::startup::{get_connection_pool, Application};
 use zero2prod::telemetry::{get_subscriber, init_subscriber};
+use argon2::password_hash::SaltString;
+use argon2::{Argon2, PasswordHasher};
 
 pub struct TestUser {
     pub user_id: Uuid,
     pub username: String,
-    pub password: String
+    pub password: String,
 }
 
 impl TestUser {
@@ -18,13 +20,20 @@ impl TestUser {
         Self {
             user_id: Uuid::new_v4(),
             username: Uuid::new_v4().to_string(),
-            password: Uuid::new_v4().to_string()
+            password: Uuid::new_v4().to_string(),
         }
     }
 
     async fn store(&self, pool: &PgPool) {
-        let password_hash = sha3::Sha3_256::digest(self.password.as_bytes());
-        let password_hash = format!("{:x}", password_hash);
+        let salt = SaltString::generate(&mut rand::thread_rng());
+        // We don't care about the exact Argon2 parameters here
+        // given that it's for testing purposes!
+        let password_hash = Argon2::default()
+            .hash_password(self.password.as_bytes(), &salt)
+            .unwrap()
+            .to_string();
+        // let password_hash = sha3::Sha3_256::digest(self.password.as_bytes());
+        // let password_hash = format!("{:x}", password_hash);
         sqlx::query!(
             "INSERT INTO users (user_id, username, password_hash)\
             VALUES ($1, $2, $3)",
@@ -32,9 +41,9 @@ impl TestUser {
             self.username,
             password_hash,
         )
-            .execute(pool)
-            .await
-            .expect("Failed to store test user.");
+        .execute(pool)
+        .await
+        .expect("Failed to store test user.");
     }
 }
 
@@ -43,7 +52,7 @@ pub struct TestApp {
     pub db_pool: PgPool,
     pub email_server: MockServer,
     pub port: u16,
-    test_user: TestUser
+    test_user: TestUser,
 }
 
 impl TestApp {
@@ -164,7 +173,7 @@ pub async fn spawn_app() -> TestApp {
         db_pool: get_connection_pool(&configuration.database),
         email_server,
         port: application_port,
-        test_user: TestUser::generate()
+        test_user: TestUser::generate(),
     };
 
     test_app.test_user.store(&test_app.db_pool).await;
@@ -173,7 +182,6 @@ pub async fn spawn_app() -> TestApp {
     test_app
 
     // return application address and pg connection
-
 
     // let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
     // let port = listener.local_addr().unwrap().port();
