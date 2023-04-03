@@ -23,7 +23,8 @@ name = "zero2prod"
 [dependencies]
 # web framework
 actix-web = "4"
-actix-http = "3.2.2"
+
+tokio = { version = "1.27.0", features = ["full"] }
 
 # We need the optional `derive` feature to use `serde`'s procedural macros:
 # `#[derive(Serialize)]` and `#[derive(Deserialize)]`.
@@ -34,16 +35,16 @@ serde = { version = "1", features = ["derive"]}
 serde-aux = "4.1.2"
 
 # 读取 yaml 配置文件
-config = { version = "0.11.0", default-features = false, features = ["yaml"] }
+config = { version = "0.13", default-features = false, features = ["yaml"] }
 
 # 生成uuid
 uuid = { version = "1", features = ["v4", "serde"] }
 
 # 时间
-chrono = "0.4.15"
+chrono = { version = "0.4.22", default-features = false, features = ["clock"] }
 
 # 全局日志
-env_logger = "0.10.0"
+#env_logger = "0.10.0"
 
 # 手动打印日志
 log = "0.4.17"
@@ -51,11 +52,11 @@ log = "0.4.17"
 # 链路追踪
 tracing = { version = "0.1", features = ["log"] }
 # Instrument
-tracing-futures = "0.2.5"
+#tracing-futures = "0.2.5"
 # subscriber
-tracing-subscriber = { version = "0.2.12", features = ["registry", "env-filter"] }
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
 # format e.json
-tracing-bunyan-formatter = "0.2.4"
+tracing-bunyan-formatter = "0.3"
 tracing-log = "0.1.3"
 tracing-actix-web = "0.7.2"
 
@@ -64,14 +65,14 @@ unicode-segmentation = "1.10.1"
 validator = "0.16.0"
 
 # We need the `json` feature flag to serialize/deserialize JSON payloads
-reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "cookies"] }
 
 # We need the `std_rng` to get access to the PRNG we want
 rand = { version = "0.8", features=["std_rng"] }
 
 # error macro
-thiserror = "1"
-anyhow = "1"
+thiserror = "1.0.24"
+anyhow = "1.0.40"
 
 # header
 base64 = "0.13"
@@ -80,7 +81,7 @@ base64 = "0.13"
 sha3 = "0.9"
 
 # encrype password
-argon2 = { version = "0.3", features = ["std"] }
+argon2 = { version = "0.5.0", features = ["std"] }
 
 sqlx = { version = "0.6", default-features = false, features = ["runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "offline"] }
 
@@ -99,14 +100,15 @@ sqlx = { version = "0.6", default-features = false, features = ["runtime-actix-r
 #]
 
 [dev-dependencies]
-actix-rt = "2.8.0"
+#actix-rt = "2.8.0"
 # assert info
-claim = "0.5"
+claims = "0.7.0"
 # sync once
 once_cell = "1.17.1"
 
-# test tokio
-tokio = { version = "1", features = ["rt", "macros"] }
+# test span app tokio
+#tokio = { version = "1.27.0", features = ["full"] }
+#tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 # email mock server
 wiremock = "0.5"

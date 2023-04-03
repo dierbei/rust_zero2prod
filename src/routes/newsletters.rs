@@ -1,8 +1,8 @@
 use crate::domain::SubscriberEmail;
 use crate::email_client::EmailClient;
 use crate::routes::error_chain_fmt;
-use actix_http::header::HeaderMap;
-use actix_web::http::header::HeaderValue;
+// use actix_http::header::HeaderMap;
+use actix_web::http::header::{HeaderMap, HeaderValue};
 use actix_web::http::{header, StatusCode};
 use actix_web::{web, ResponseError};
 use actix_web::{HttpRequest, HttpResponse};
@@ -12,6 +12,7 @@ use log::error;
 // use sha3::Digest;
 use sqlx::PgPool;
 use std::fmt::Formatter;
+use crate::telemetry::spawn_blocking_with_tracing;
 
 #[derive(thiserror::Error)]
 pub enum PublishError {
@@ -251,9 +252,19 @@ async fn validate_credentials(
         .map_err(PublishError::UnexpectedError)?
         .ok_or_else(|| PublishError::AuthError(anyhow::anyhow!("Unknown username.")))?;
 
-    actix_web::rt::task::spawn_blocking(move || {
+    // This executes before spawning the new thread
+    // let current_span = tracing::Span::current();
+    spawn_blocking_with_tracing(move || {
         verify_password_hash(expected_password_hash, credentials.password)
     })
+    // actix_web::rt::task::spawn_blocking(move || {
+    //     // We then pass ownership to it into the closure
+    //     // and explicitly executes all our computation
+    //     // within its scope.
+    //     current_span.in_scope(|| {
+    //         verify_password_hash(expected_password_hash, credentials.password)
+    //     })
+    // })
     .await
     .context("Failed to spawn blocking task.")
     .map_err(PublishError::UnexpectedError)??;
