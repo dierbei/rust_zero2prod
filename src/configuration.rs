@@ -73,7 +73,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
 
     let settings = config::Config::builder()
         .add_source(config::File::from(
-            configuration_directory.join("base.yaml")
+            configuration_directory.join("base.yaml"),
         ))
         .add_source(config::File::from(
             configuration_directory.join(environment_filename),
@@ -83,7 +83,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(
             config::Environment::with_prefix("APP")
                 .prefix_separator("_")
-                .separator("__")
+                .separator("__"),
         )
         .build()?;
 

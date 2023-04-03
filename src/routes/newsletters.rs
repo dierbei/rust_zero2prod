@@ -10,9 +10,9 @@ use anyhow::Context;
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use log::error;
 // use sha3::Digest;
+use crate::telemetry::spawn_blocking_with_tracing;
 use sqlx::PgPool;
 use std::fmt::Formatter;
-use crate::telemetry::spawn_blocking_with_tracing;
 
 #[derive(thiserror::Error)]
 pub enum PublishError {
@@ -247,15 +247,31 @@ async fn validate_credentials(
     // .context("Failed to perform a query to retrieve stored credentials.")
     // .map_err(PublishError::UnexpectedError)?;
 
-    let (user_id, expected_password_hash) = get_stored_credentials(&credentials.username, pool)
-        .await
-        .map_err(PublishError::UnexpectedError)?
-        .ok_or_else(|| PublishError::AuthError(anyhow::anyhow!("Unknown username.")))?;
+    let mut user_id = None;
+    let mut expected_password_hash = "$argon2id$v=19$m=15000,t=2,p=1$\
+    gZiV/M1gPc22ElAH/Jh1Hw$\
+    CWOrkoo7oJBQ/iyh7uJ0LO2aLEfrHwTWllSAxT0zRno"
+        .to_string();
+
+    if let Some((stored_user_id, stored_password_hash)) =
+        get_stored_credentials(&credentials.username, &pool)
+            .await
+            .map_err(PublishError::UnexpectedError)?
+    {
+        user_id = Some(stored_user_id);
+        expected_password_hash = stored_password_hash;
+    }
+
+    // let (user_id, expected_password_hash) = get_stored_credentials(&credentials.username, pool)
+    //     .await
+    //     .map_err(PublishError::UnexpectedError)?
+    //     .ok_or_else(|| PublishError::AuthError(anyhow::anyhow!("Unknown username.")))?;
 
     // This executes before spawning the new thread
     // let current_span = tracing::Span::current();
     spawn_blocking_with_tracing(move || {
         verify_password_hash(expected_password_hash, credentials.password)
+        // verify_password_hash(expected_password_hash, credentials.password)
     })
     // actix_web::rt::task::spawn_blocking(move || {
     //     // We then pass ownership to it into the closure
@@ -288,7 +304,13 @@ async fn validate_credentials(
     //     .context("Invalid password.")
     //     .map_err(PublishError::AuthError)?;
 
-    Ok(user_id)
+    // This is only set to `Some` if we found credentials in the store
+    // So, even if the default password ends up matching (somehow)
+    // with the provided password,
+    // we never authenticate a non-existing user.
+    // You can easily add a unit test for that precise scenario.
+
+    user_id.ok_or_else(|| PublishError::AuthError(anyhow::anyhow!("Unknown username.")))
 }
 
 // We extracted the db-querying logic in its own function with its own span.
