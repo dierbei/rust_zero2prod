@@ -18,7 +18,7 @@ impl EmailClient {
         let http_client = Client::builder().timeout(timeout).build().unwrap();
 
         Self {
-            http_client: http_client,
+            http_client,
             base_url,
             sender,
             authorization_token,

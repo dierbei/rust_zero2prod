@@ -246,20 +246,17 @@ async fn validate_credentials(
     // .context("Failed to perform a query to retrieve stored credentials.")
     // .map_err(PublishError::UnexpectedError)?;
 
-    let (user_id, expected_password_hash) = get_stored_credentials(&credentials.username, &pool)
+    let (user_id, expected_password_hash) = get_stored_credentials(&credentials.username, pool)
         .await
         .map_err(PublishError::UnexpectedError)?
         .ok_or_else(|| PublishError::AuthError(anyhow::anyhow!("Unknown username.")))?;
 
     actix_web::rt::task::spawn_blocking(move || {
-        verify_password_hash(
-            expected_password_hash,
-            credentials.password
-        )
+        verify_password_hash(expected_password_hash, credentials.password)
     })
-        .await
-        .context("Failed to spawn blocking task.")
-        .map_err(PublishError::UnexpectedError)??;
+    .await
+    .context("Failed to spawn blocking task.")
+    .map_err(PublishError::UnexpectedError)??;
 
     // let expected_password_hash = PasswordHash::new(&expected_password_hash)
     //     .context("Failed to parse hash in PHC string format.")
@@ -297,10 +294,10 @@ async fn get_stored_credentials(
         "#,
         username,
     )
-        .fetch_optional(pool)
-        .await
-        .context("Failed to perform a query to retrieve stored credentials.")?
-        .map(|row| (row.user_id, row.password_hash));
+    .fetch_optional(pool)
+    .await
+    .context("Failed to perform a query to retrieve stored credentials.")?
+    .map(|row| (row.user_id, row.password_hash));
 
     Ok(row)
 }
