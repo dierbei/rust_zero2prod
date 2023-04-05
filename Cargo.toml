@@ -23,6 +23,8 @@ name = "zero2prod"
 [dependencies]
 # web framework
 actix-web = "4"
+# cors
+actix-cors = "0.6.4"
 
 tokio = { version = "1.27.0", features = ["full"] }
 
