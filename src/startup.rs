@@ -93,13 +93,16 @@ pub fn run(
 
     let server = HttpServer::new(move || {
         let cors = Cors::default()
-            .allowed_origin("*")
+            // .allowed_origin("*")
+            .allow_any_origin()
+            .allow_any_header()
+            .allow_any_method()
             // .allowed_origin_fn(|origin, _req_head| {
             //     origin.as_bytes().ends_with(b".rust-lang.org")
             // })
-            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
-            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-            .allowed_header(http::header::CONTENT_TYPE)
+            // .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+            // .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            // .allowed_header(http::header::CONTENT_TYPE)
             .max_age(3600);
 
         App::new()
