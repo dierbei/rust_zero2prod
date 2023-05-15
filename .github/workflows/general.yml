@@ -45,13 +45,10 @@ jobs:
           - 5432:5432
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: clippy
-      - name: Linting
-        run: cargo clippy -- -D warnings
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@v3
+      - name: Deny
         run: |
+          cargo install cargo-deny
           pushd . && cargo deny check --all-features --all-profiles --deny warnings && popd
       - uses: Swatinem/rust-cache@v2
         with:
