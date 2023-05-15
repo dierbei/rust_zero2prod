@@ -98,6 +98,17 @@ jobs:
       - name: Linting
         run: cargo clippy -- -D warnings
 
+  deny:
+    name: Cargo Deny
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dtolnay/rust-toolchain@v1
+        with:
+          components: cargo-deny
+      - name: Deny
+        run: cargo deny check --all-features --all-profiles --deny warnings
+
   coverage:
     name: Code coverage
     runs-on: ubuntu-latest
