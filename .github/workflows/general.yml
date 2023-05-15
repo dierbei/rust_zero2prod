@@ -103,10 +103,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: cargo-deny
-      - name: Deny
+      - uses: taiki-e/install-action@cargo-deny
+      - name: Scan for vulnerabilities
         run: cargo deny check --all-features --all-profiles --deny warnings
 
   coverage:
